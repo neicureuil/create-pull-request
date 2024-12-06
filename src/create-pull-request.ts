@@ -196,12 +196,14 @@ export async function createPullRequest(inputs: Inputs): Promise<void> {
       inputs.signoff,
       inputs.addPaths
     )
+    core.debug("createOrUpdateBranch done")
     outputs.set('pull-request-head-sha', result.headSha)
     // Set the base. It would have been '' if not specified as an input
     inputs.base = result.base
     core.endGroup()
 
     if (['created', 'updated'].includes(result.action)) {
+      core.debug("va te faire")
       // The branch was created or updated
       core.startGroup(
         `Pushing pull request branch to '${branchRemoteName}/${inputs.branch}'`
@@ -227,6 +229,7 @@ export async function createPullRequest(inputs: Inputs): Promise<void> {
           await git.stashPop()
         }
       } else {
+        core.info("Git push start")
         await git.push([
           '--force-with-lease',
           branchRemoteName,

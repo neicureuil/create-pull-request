@@ -208,6 +208,7 @@ function createOrUpdateBranch(git, commitMessage, base, branch, branchRemoteName
         }
         // Stash any uncommitted tracked and untracked changes
         const stashed = yield git.stashPush(['--include-untracked']);
+        core.info(`Stashed result '${stashed}'`);
         // Reset the working base
         // Commits made during the workflow will be removed
         if (workingBaseType == WorkingBaseType.Branch) {
@@ -322,8 +323,11 @@ function createOrUpdateBranch(git, commitMessage, base, branch, branchRemoteName
         yield git.checkout(workingBase);
         // Restore any stashed changes
         if (stashed) {
+            core.info(`Begin stash pop`);
             yield git.stashPop();
         }
+        core.info(`After stash pop`);
+
         return {
             action: action,
             base: base,

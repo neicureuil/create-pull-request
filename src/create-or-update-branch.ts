@@ -217,6 +217,7 @@ export async function createOrUpdateBranch(
 
   // Stash any uncommitted tracked and untracked changes
   const stashed = await git.stashPush(['--include-untracked'])
+  core.debug("Stashed result : " + stashed)
 
   // Reset the working base
   // Commits made during the workflow will be removed
@@ -358,8 +359,10 @@ export async function createOrUpdateBranch(
 
   // Restore any stashed changes
   if (stashed) {
+    core.debug("Begin unstash")
     await git.stashPop()
   }
+  core.debug("End unstash")
 
   return {
     action: action,
